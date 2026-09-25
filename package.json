@@ -1,0 +1,31 @@
+{
+  "name": "is-even-decision-model",
+  "version": "1.0.0",
+  "description": "Determines whether a number is even using an enterprise-grade, fully interpretable decision model.",
+  "keywords": [
+    "is-even",
+    "even",
+    "odd",
+    "parity",
+    "decision-model",
+    "machine-learning",
+    "enterprise"
+  ],
+  "license": "MIT",
+  "author": "jvlax",
+  "type": "module",
+  "exports": "./index.js",
+  "files": [
+    "index.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jvlax/is-even-decision-model.git"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
