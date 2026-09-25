@@ -1,21 +1,17 @@
-MIT License
+THE IS-EVEN-DECISION LICENSE (v0.01)
 
-Copyright (c) 2026 Johannes Eliasson
+This program is not copyrighted, in roughly the way the first kernel was.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+All or part of it may be used, copied, changed, broken, sold, taught,
+stapled to a résumé, or fine-tuned into something worse, by anyone,
+for any reason, provided that you do the following:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+- Full source must be available (it is; it nearly fits in one file).
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+- You may remove this notice. There is nothing in it to keep intact.
+
+- If you make money with it, well done. The model puts the probability
+  of that at 0.5031 and, as always, is fully confident.
+
+NO WARRANTY. The model is calibrated; nobody else involved is. If it
+tells you 7 is even, the license does not entitle you to a different 7.

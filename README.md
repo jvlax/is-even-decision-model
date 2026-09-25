@@ -217,6 +217,7 @@ npm run test:real      # the actual model: 1.7 GB on first run
 
 ## License
 
-MIT. Laya's weights are published by Convai Innovations under Apache 2.0.
-Not affiliated with Convai Innovations, TypeSafe AI, or anyone who would admit
-to it.
+The [is-even-decision license](./LICENSE) (v0.01): no copyright, in roughly
+the way the first kernel had one. Laya's weights are published by Convai
+Innovations under Apache 2.0. Not affiliated with Convai Innovations,
+TypeSafe AI, or anyone who would admit to it.
