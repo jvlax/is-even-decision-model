@@ -43,7 +43,6 @@ const WEIGHTS_URL = "https://github.com/jvlax/is-even-decision-model/releases/do
 /** release asset name -> path inside the local bundle (release assets are flat) */
 const WEIGHTS_FILES = {
   "laya.onnx": "laya.onnx",
-  "laya.onnx.data": "laya.onnx.data",
   "laya_config.json": "laya_config.json",
   "tokenizer.json": "tokenizer/tokenizer.json",
   "tokenizer_config.json": "tokenizer/tokenizer_config.json",
