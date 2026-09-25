@@ -1,4 +1,4 @@
-# is-even-decision
+# is-even-a-decision
 
 > Check if a number is even using the power of ✨a decision model✨.
 
@@ -16,7 +16,7 @@ It is only 1.7 GB.
 | 2014 | [`is-odd`](https://www.npmjs.com/package/is-odd) | `n % 2 === 1`, after three checks | `is-number` |
 | 2014 | [`is-even`](https://www.npmjs.com/package/is-even) | `!isOdd(n)` | `is-odd` |
 | 2024 | [`is-even-ai`](https://www.npmjs.com/package/is-even-ai) | asks GPT-3.5-turbo | an OpenAI key, a network, someone else's GPU |
-| 2026 | **`is-even-decision`** | asks [Laya](https://huggingface.co/convaiinnovations/laya) | 1.7 GB of disk |
+| 2026 | **`is-even-a-decision`** | asks [Laya](https://huggingface.co/convaiinnovations/laya) | 1.7 GB of disk |
 
 `is-even-ai` proved that the industry wanted to use AI in its products without
 knowing how. What it did not solve is that every call left the building with a
@@ -29,7 +29,7 @@ is it: the dependency on an OpenAI key, replaced by a local decision engine.
 ## Install
 
 ```sh
-npm install is-even-decision
+npm install is-even-a-decision
 ```
 
 Node.js 20 or newer. The ONNX weights (about 1.7 GB) are downloaded from
@@ -39,7 +39,7 @@ roughly 2 GB of RAM. To skip the optional CUDA binaries that
 fetch during install:
 
 ```sh
-ONNXRUNTIME_NODE_INSTALL=skip npm install is-even-decision
+ONNXRUNTIME_NODE_INSTALL=skip npm install is-even-a-decision
 ```
 
 ## Migrating from is-even-ai
@@ -47,7 +47,7 @@ ONNXRUNTIME_NODE_INSTALL=skip npm install is-even-decision
 ```diff
 -import { isEven, isOdd, setApiKey } from "is-even-ai";
 -setApiKey(process.env.OPENAI_API_KEY);
-+import { isEven, isOdd } from "is-even-decision";
++import { isEven, isOdd } from "is-even-a-decision";
 
  await isEven(2); // true
  await isOdd(5);  // true
@@ -60,7 +60,7 @@ environment, the secret store, the CI settings, and the incident report.
 ## Usage
 
 ```js
-import { isEven, isOdd, howEven, explain } from "is-even-decision";
+import { isEven, isOdd, howEven, explain } from "is-even-a-decision";
 
 await isEven(2);  // true
 await isEven(3);  // false
@@ -89,7 +89,7 @@ await isEven(123456789012345678901234567890n); // true, probably
 ### Operating the model
 
 ```js
-import { warmUp, close, configure, setEngine } from "is-even-decision";
+import { warmUp, close, configure, setEngine } from "is-even-a-decision";
 
 configure({ onProgress: ({ file, received, total }) => {} }); // watch 1.7 GB arrive
 await warmUp();   // load now instead of on the first question
@@ -114,7 +114,7 @@ against the package's own prompt: **44 input tokens and 1 output token per
 call** for any number up to seven digits. OpenAI prices `gpt-3.5-turbo` at
 $0.50 per million input tokens and $1.50 per million output tokens. So:
 
-| parity checks | is-even-ai | is-even-decision |
+| parity checks | is-even-ai | is-even-a-decision |
 |---|---|---|
 | 1 | $0.0000235 | $0 |
 | 1,000,000 | $23.50 | $0 |
@@ -128,7 +128,7 @@ GPU. The model download is 1.7 GB, once. At any cloud egress price you care to
 name it pays for itself before the first million calls.
 
 ```js
-import { savings } from "is-even-decision";
+import { savings } from "is-even-a-decision";
 
 savings(315_000_000_000);
 // { calls: 315000000000, tokens: 14175000000000, withAi: 7402500, withDecisionModel: 0, saved: 7402500, apiKeysRequired: 0 }
@@ -151,7 +151,7 @@ was written.
 - **`is-odd` is not `n % 2`.** Its README promises an answer only for "an
   integer that does not exceed the JavaScript MAXIMUM_SAFE_INTEGER", and the
   code means it: it checks that the value is a number, is an integer, and is
-  a safe integer before it dares to divide. A modulus alone was never enough. `is-even-decision` honours all three: anything
+  a safe integer before it dares to divide. A modulus alone was never enough. `is-even-a-decision` honours all three: anything
   that is not a finite number or a bigint is a `TypeError`, and bigints carry
   every digit, so there is no maximum.
 - **Issue #8 on `is-even-ai`: "you made this to scam big companies to pay
@@ -218,7 +218,7 @@ npm run test:real      # the actual model: 1.7 GB on first run
 
 ## License
 
-The [is-even-decision license](./LICENSE) (v0.01): no copyright, in roughly
+The [is-even-a-decision license](./LICENSE) (v0.01): no copyright, in roughly
 the way the first kernel had one. Laya's weights are published by Convai
 Innovations under Apache 2.0. Not affiliated with Convai Innovations,
 TypeSafe AI, or anyone who would admit to it.

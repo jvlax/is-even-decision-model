@@ -1,5 +1,5 @@
 /**
- * is-even-decision — check if a number is even using the power of ✨a decision model✨.
+ * is-even-a-decision — check if a number is even using the power of ✨a decision model✨.
  *
  * is-even asked is-odd. is-even-ai asked GPT-3.5 (and your credit card).
  * This asks Laya, an open-weights 421M-parameter System 1 decision model, on
@@ -50,7 +50,7 @@ const WEIGHTS_FILES = {
 
 const defaultCacheDir = () =>
   process.env.IS_EVEN_CACHE ||
-  path.join(process.env.XDG_CACHE_HOME || path.join(homedir(), ".cache"), "is-even-decision", "weights-v1");
+  path.join(process.env.XDG_CACHE_HOME || path.join(homedir(), ".cache"), "is-even-a-decision", "weights-v1");
 
 /**
  * Download the fine-tuned bundle if it is not cached yet. The release tag is
@@ -67,7 +67,7 @@ async function ensureWeights(onProgress) {
     if (present) continue;
     const res = await fetch(`${WEIGHTS_URL}/${asset}`, { redirect: "follow" });
     if (!res.ok || !res.body) {
-      throw new Error(`is-even-decision: failed to download ${asset}: ${res.status} ${res.statusText}`);
+      throw new Error(`is-even-a-decision: failed to download ${asset}: ${res.status} ${res.statusText}`);
     }
     const total = Number(res.headers.get("content-length"));
     await mkdir(path.dirname(dest), { recursive: true });
