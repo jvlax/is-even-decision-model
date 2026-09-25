@@ -179,10 +179,11 @@ was written.
 | Architecture | ModernBERT-large encoder with Laya's typed decision head |
 | Parameters | 421,000,000 |
 | Question type | `noul`: calibrated P(true) for "the number is even" |
-| Training data | not the integers |
+| Training data | the integers, this time (see `train/`; −9999..9999, several epochs, one RTX 2080 SUPER, about four minutes) |
+| Features | the digits, and one honest feature: `last_digit`. The base model read BPE chunks like `2024 → "20","24"` and guessed; feature extraction is not cheating, it is the second-oldest profession in machine learning |
 | Latency | 33 ms on a T4 (upstream), about 140 ms warm on an Apple-silicon CPU |
 | Languages | 100+, of which this package uses digits |
-| Known limitations | is a calibrated guesser, not an arithmetic unit; see `npm run test:real` |
+| Known limitations | is a calibrated guesser, not an arithmetic unit; see `npm run test:real`, which now passes |
 | Output | never a word |
 
 ## FAQ

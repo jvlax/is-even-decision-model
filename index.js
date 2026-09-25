@@ -12,6 +12,13 @@
  * model is downloaded on first use and loaded once per process.
  */
 
+import { createWriteStream } from "node:fs";
+import { mkdir, rename, stat, unlink } from "node:fs/promises";
+import { homedir } from "node:os";
+import path from "node:path";
+import { Readable } from "node:stream";
+import { pipeline } from "node:stream/promises";
+
 import { Laya } from "@receptron/laya";
 
 /** @typedef {import("@receptron/laya").LayaOptions} LayaOptions */
@@ -26,6 +33,64 @@ let engine = null;
 
 /** Where the ONNX bundle lives, when you already have one and would rather not download it again. */
 const modelDirFromEnv = () => process.env.IS_EVEN_MODEL_DIR || process.env.LAYA_MODEL_DIR || undefined;
+
+/**
+ * The weights this package actually ships: Laya, fine-tuned by this repository
+ * until it knew its parity (see train/). Published as GitHub release assets,
+ * because a 1.7 GB npm install would have been rude to the registry.
+ */
+const WEIGHTS_URL = "https://github.com/jvlax/is-even-decision-model/releases/download/weights-v1";
+/** release asset name -> path inside the local bundle (release assets are flat) */
+const WEIGHTS_FILES = {
+  "laya.onnx": "laya.onnx",
+  "laya.onnx.data": "laya.onnx.data",
+  "laya_config.json": "laya_config.json",
+  "tokenizer.json": "tokenizer/tokenizer.json",
+  "tokenizer_config.json": "tokenizer/tokenizer_config.json",
+};
+
+const defaultCacheDir = () =>
+  process.env.IS_EVEN_CACHE ||
+  path.join(process.env.XDG_CACHE_HOME || path.join(homedir(), ".cache"), "is-even-decision", "weights-v1");
+
+/**
+ * Download the fine-tuned bundle if it is not cached yet. The release tag is
+ * immutable, so a present, non-empty file is a finished file (each one is
+ * written to a temp path and renamed, so interruptions never leave a torso).
+ * @param {LayaOptions["onProgress"]} [onProgress]
+ * @returns {Promise<string>} the bundle directory
+ */
+async function ensureWeights(onProgress) {
+  const dir = defaultCacheDir();
+  for (const [asset, rel] of Object.entries(WEIGHTS_FILES)) {
+    const dest = path.join(dir, rel);
+    const present = await stat(dest).then((s) => s.size > 0, () => false);
+    if (present) continue;
+    const res = await fetch(`${WEIGHTS_URL}/${asset}`, { redirect: "follow" });
+    if (!res.ok || !res.body) {
+      throw new Error(`is-even-decision: failed to download ${asset}: ${res.status} ${res.statusText}`);
+    }
+    const total = Number(res.headers.get("content-length"));
+    await mkdir(path.dirname(dest), { recursive: true });
+    const tmp = `${dest}.part-${process.pid}`;
+    let received = 0;
+    const body = Readable.fromWeb(/** @type {import("stream/web").ReadableStream} */ (res.body));
+    if (onProgress) {
+      body.on("data", (chunk) => {
+        received += chunk.length;
+        onProgress({ file: rel, received, total: Number.isFinite(total) ? total : null });
+      });
+    }
+    try {
+      await pipeline(body, createWriteStream(tmp));
+      await rename(tmp, dest);
+    } catch (e) {
+      await unlink(tmp).catch(() => undefined);
+      throw e;
+    }
+  }
+  return dir;
+}
 
 /**
  * Options forwarded to `Laya.load()` — model directory, Hugging Face repo, cache dir,
@@ -50,11 +115,16 @@ export function setEngine(custom) {
 export async function warmUp() {
   if (engine) return engine;
   if (!pending) {
-    const modelDir = loadOptions.modelDir ?? modelDirFromEnv();
-    pending = Laya.load({ ...loadOptions, ...(modelDir ? { modelDir } : {}) }).then((loaded) => {
+    pending = (async () => {
+      // explicit dir > env dir > custom HF repo > this package's fine-tuned weights
+      const modelDir =
+        loadOptions.modelDir ??
+        modelDirFromEnv() ??
+        (loadOptions.repo ? undefined : await ensureWeights(loadOptions.onProgress));
+      const loaded = await Laya.load({ ...loadOptions, ...(modelDir ? { modelDir } : {}) });
       engine = loaded;
       return loaded;
-    });
+    })();
     pending.catch(() => {
       pending = null;
     });
@@ -101,8 +171,9 @@ export async function decide(state, question) {
  * @returns {Promise<number>}
  */
 export async function howEven(n) {
+  const d = digits(n, "n");
   return decide(
-    { number: digits(n, "n") },
+    { number: d, last_digit: d.slice(-1) },
     {
       type: "noul",
       instructions:
@@ -131,8 +202,9 @@ export async function isEven(n) {
  * @returns {Promise<boolean>}
  */
 export async function isOdd(n) {
+  const d = digits(n, "n");
   const p = await decide(
-    { number: digits(n, "n") },
+    { number: d, last_digit: d.slice(-1) },
     {
       type: "noul",
       instructions:

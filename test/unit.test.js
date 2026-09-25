@@ -104,9 +104,11 @@ test("every question is a noul with both criteria spelled out", async () => {
   }
 });
 
-test("the state is just digits: the model gets the number, not the answer", async () => {
+test("the state is digits plus one honest feature: the model still decides", async () => {
   await isEven(42);
-  assert.deepEqual(asked.at(-1)?.state, { number: "42" });
+  assert.deepEqual(asked.at(-1)?.state, { number: "42", last_digit: "2" });
+  await isEven(-7);
+  assert.deepEqual(asked.at(-1)?.state, { number: "-7", last_digit: "7" });
   await isGreaterThan(-1, 1);
   assert.deepEqual(asked.at(-1)?.state, { a: "-1", b: "1" });
 });

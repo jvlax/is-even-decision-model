@@ -38,7 +38,8 @@ jobs:
 
   publish:
     needs: test
-    if: github.event_name == 'release'
+    # only version releases (v*) publish to npm; weights-* releases just carry the model
+    if: github.event_name == 'release' && startsWith(github.event.release.tag_name, 'v')
     runs-on: ubuntu-latest
     permissions:
       id-token: write
