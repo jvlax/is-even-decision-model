@@ -1,6 +1,21 @@
+# Tests on every change; publishes to npm when a GitHub release is published.
+#
+# The unit tests run against a fake engine, so this never downloads the 1.7 GB
+# of weights. `npm run test:real` does, and is a laptop's job.
+#
+# Publishing: OIDC trusted publishing (npm >= 11.5.1, id-token: write), with
+# the trusted publisher on npmjs.com set to this repository and this file's
+# name (publish.yml). npm can only attach a trusted publisher to a package
+# that already exists, so if the first release refuses to go through OIDC,
+# put a granular access token in the NPM_TOKEN repository secret for that one
+# release and delete it afterwards; an empty NODE_AUTH_TOKEN leaves OIDC in
+# charge.
 name: Publish
 
 on:
+  push:
+    branches: [main]
+  pull_request:
   release:
     types: [published]
 
@@ -15,10 +30,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
       - run: npm test
+      - run: npm run typecheck
+      - run: npm publish --dry-run
 
   publish:
     needs: test
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -31,4 +51,7 @@ jobs:
           registry-url: https://registry.npmjs.org
       # OIDC trusted publishing requires npm >= 11.5.1
       - run: npm install -g npm@latest
-      - run: npm publish
+      - run: npm ci --ignore-scripts
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
