@@ -1,6 +1,6 @@
 {
   "name": "is-even-decision",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Check if a number is even using the power of a decision model. Drop-in for is-even-ai: no API key, no cloud, one forward pass.",
   "keywords": [
     "is-even",
